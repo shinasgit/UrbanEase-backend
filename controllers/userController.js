@@ -38,17 +38,43 @@ exports.loginUser = async(req,res)=>{
         if(existingUser){
             if(existingUser.password === password){
 
-                //token gen
-                const token = jwt.sign({email:existingUser.email,role:existingUser.role},process.env.jwtKey)
-
-
-               res.status(200).json({message:"Login Successful",user:existingUser,token}) 
+            //token gen
+            const token = jwt.sign({email:existingUser.email,role:existingUser.role},process.env.jwtKey)
+            console.log(token);
+               
+            res.status(200).json({message:"Login Successful",user:existingUser,token}) 
             }else{
                 res.status(401).json({message:"Password Mismatch"})
             }
             res.status(401).json("Welcome User...")
         }else{
            res.status(401).json({message:"User not Found"}) 
+        }
+    } catch (error) {
+        res.status(500).json("Error",error)
+    }
+}
+
+//googlr login
+exports.googleAuth = async(req,res)=>{
+    console.log("Inside Google Login");
+    const {email,password,username,profile}=req.body
+    try {
+        const existingUser = await User.findOne({email})
+        if(existingUser){
+            //token gen
+            const token = jwt.sign({email:existingUser.email,role:existingUser.role},process.env.jwtKey)
+            console.log(token);
+               
+            res.status(200).json({message:"Login Successful",user:existingUser,token})
+        }else{
+            const newUser = new User({username , password , email ,profile })
+            await newUser.save()
+            res.status(200).json(newUser)
+            //token gen
+            const token = jwt.sign({email:existingUser.email,role:existingUser.role},process.env.jwtKey)
+            console.log(token);
+            res.status(201).json({message:"Login Successful",user:newUser,token})
         }
     } catch (error) {
         res.status(500).json("Error",error)

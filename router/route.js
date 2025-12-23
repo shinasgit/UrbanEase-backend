@@ -11,6 +11,9 @@ router.post("/api/register",userController.registerUser)
 //path regsiter
 router.post("/api/login",userController.loginUser)
 
-//exportrouter
+//path regsiter
+router.post("/api/google-login",userController.googleAuth)
+
+//export router 
 module.exports = router
 
