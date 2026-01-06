@@ -80,3 +80,21 @@ exports.googleAuth = async(req,res)=>{
         res.status(500).json("Error",error)
     }
 }
+
+exports.adminUserDetails = async (req, res) => {
+    console.log("inside admin user-getting detials of user");
+
+    
+
+    // const { email, password } = req.body
+
+             try {
+                    const userDetails = await User.find({role:"User"})
+                    res.status(200).json(userDetails)
+            
+                } catch (error) {
+                    res.status(500).json("Err"+error)
+                }
+        
+    
+    }

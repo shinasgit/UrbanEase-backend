@@ -37,8 +37,16 @@ const houseSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    status:{
+        type: String ,
+        default:"Pending"
+    },
+    userMail:{
+        type: String ,
+        required:true
+    },
     uploadImage:{
-        type:String,
+        type:[String],
         required:true
     }
 })
