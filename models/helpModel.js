@@ -5,7 +5,7 @@ const helpSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    name:{
+    helpername:{
         type:String,
         required:true
     },

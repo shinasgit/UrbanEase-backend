@@ -22,3 +22,15 @@ exports.addApp = async(req,res)=>{
         }
         
     }
+
+    exports.getAppliance = async(req,res)=>{
+        console.log("inside Appliance get user");
+        try {
+            const getAppl = await Appliance.find()
+            console.log(getAppl);
+            res.status(200).json(getAppl)
+            //  res.status(200).json()
+        } catch (error) {
+             res.status(500).json("Error",error)
+        }
+    }

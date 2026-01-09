@@ -4,8 +4,8 @@ exports.addHelp = async(req,res)=>{
     console.log("Inside add Helpcontact");
     // console.log(req.body);
 
-    const {jobType , name , number, station ,location ,phonenumber}= req.body
-        console.log({jobType , name , number, station ,location ,phonenumber });
+    const {jobType , helpername , number, station ,location ,phonenumber}= req.body
+        console.log({jobType , helpername , number, station ,location ,phonenumber });
         try {
             const existingHelp = await Helper.findOne({number , phonenumber})
     
@@ -13,7 +13,7 @@ exports.addHelp = async(req,res)=>{
                 res.status(401).json("HelpContact is already existing...")
             }
             else{
-                const newHelp = new Helper({jobType , name , number, station ,location ,phonenumber })
+                const newHelp = new Helper({jobType , helpername , number, station ,location ,phonenumber })
                 await newHelp.save()
                 res.status(200).json({message:"Help Added",newHelp})
             }
@@ -21,4 +21,15 @@ exports.addHelp = async(req,res)=>{
             res.status(500).json("Error",error)
         }
         
+    }
+
+    exports.getHelper = async(req,res)=>{
+        console.log("Inside get helper info user side");
+        try {
+            const getHelpInfo = await Helper.find()
+            console.log(getHelpInfo);
+            res.status(200).json(getHelpInfo)
+        } catch (error) {
+            res.status(500).json("Error",error)
+        }
     }

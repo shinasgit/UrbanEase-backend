@@ -36,6 +36,12 @@ router.post("/api/applianceSP",providerJwtMiddleware,appController.addApp)
 //add helper SP
 router.post("/api/helperSP",providerJwtMiddleware,helperController.addHelp)
 
+//get app - user
+router.get('/api/appliance',jwtMiddleware,appController.getAppliance)
+
+//get helper - user
+router.get('/api/helper',jwtMiddleware,helperController.getHelper)
+
 //export router 
 module.exports = router
 
