@@ -1,0 +1,132 @@
+const User = require('../models/userModel')
+//import jwt fot jwt creation
+const jwt = require('jsonwebtoken')
+
+//register
+exports.registerUser = async(req,res)=>{
+    console.log("Inside register user");
+    console.log(req.body);
+    
+    
+    const {username , password , email }= req.body
+    console.log({username , password , email});
+    try {
+        const existingUser = await User.findOne({email})
+
+        if(existingUser){
+            res.status(401).json("User is already existing...")
+        }
+        else{
+            const newUser = new User({username , password , email })
+            await newUser.save()
+            res.status(200).json(newUser)
+        }
+    } catch (error) {
+        res.status(500).json("Error",error)
+    }
+    
+}
+
+//login
+exports.loginUser = async(req,res)=>{
+    console.log("Inside Login user..");
+    // res.send("login user")
+    const {email,password} = req.body
+    
+    try {
+        const existingUser = await User.findOne({email})
+        if(existingUser){
+            if(existingUser.password === password){
+
+            //token gen
+            const token = jwt.sign({email:existingUser.email,role:existingUser.role},process.env.jwtKey)
+            console.log(token);
+               
+            res.status(200).json({message:"Login Successful",user:existingUser,token}) 
+            }else{
+                res.status(401).json({message:"Password Mismatch"})
+            }
+            res.status(401).json("Welcome User...")
+        }else{
+           res.status(401).json({message:"User not Found"}) 
+        }
+    } catch (error) {
+        res.status(500).json("Error",error)
+    }
+}
+
+//googlr login
+exports.googleAuth = async(req,res)=>{
+    console.log("Inside Google Login");
+    const {email,password,username,profile}=req.body
+    try {
+        const existingUser = await User.findOne({email})
+        if(existingUser){
+            //token gen
+            const token = jwt.sign({email:existingUser.email,role:existingUser.role},process.env.jwtKey)
+            console.log(token);
+               
+            res.status(200).json({message:"Login Successful",user:existingUser,token})
+        }else{
+            const newUser = new User({username , password , email ,profile })
+            await newUser.save()
+            res.status(200).json(newUser)
+            //token gen
+            const token = jwt.sign({email:existingUser.email,role:existingUser.role},process.env.jwtKey)
+            console.log(token);
+            res.status(201).json({message:"Login Successful",user:newUser,token})
+        }
+    } catch (error) {
+        res.status(500).json("Error",error)
+    }
+}
+
+exports.adminUserDetails = async (req, res) => {
+    console.log("inside admin user-getting detials of user");
+
+    
+
+    // const { email, password } = req.body
+
+             try {
+                    const userDetails = await User.find({role:"User"})
+                    res.status(200).json(userDetails)
+            
+                } catch (error) {
+                    res.status(500).json("Err"+error)
+                }
+    }
+
+
+    exports.deleteUser = async(req,res)=>{
+        console.log("Inside delete user");
+        console.log(req.params);
+        const {id} = req.params
+        try {
+           const delUser = await User.findByIdAndDelete({_id:id}) 
+           
+           res.status(200).json({message:"Job deleted",delUser})
+           
+        } catch (error) {
+           res.status(500).json("Err"+error) 
+        }
+        
+    }
+
+    exports.editProf = async(req,res)=>{
+        console.log("Inside edit prof");
+        console.log(req.body);
+        const {username,password,profile} = req.body
+        const email = req.payload
+        const role = req.role
+        const uploadProfile = req.file?req.file.filename:profile
+        console.log(uploadProfile);
+        
+        try {
+            const adminData = await User.findOneAndUpdate({email},{username,email,password,profile:uploadProfile,role},{new:true})
+            await adminData.save()
+            res.status(200).json({message:"Admin Details Updated",adminData})
+        } catch (error) {
+            res.status(500).json("Err"+error) 
+        }
+    }
