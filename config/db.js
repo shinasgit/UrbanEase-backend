@@ -10,6 +10,5 @@ dbString = process.env.connectionString
 mongoose.connect(dbString).then(()=>{
     console.log("Connected to MongoDB");  
 }).catch((err)=>{
-    console.log("Error connecting to MongoDB");
-    
+    console.log("Error connecting to MongoDB:", err.message);
 })

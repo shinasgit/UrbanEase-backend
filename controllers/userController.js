@@ -70,9 +70,9 @@ exports.googleAuth = async(req,res)=>{
         }else{
             const newUser = new User({username , password , email ,profile })
             await newUser.save()
-            res.status(200).json(newUser)
+            
             //token gen
-            const token = jwt.sign({email:existingUser.email,role:existingUser.role},process.env.jwtKey)
+            const token = jwt.sign({email:newUser.email,role:newUser.role},process.env.jwtKey)
             console.log(token);
             res.status(201).json({message:"Login Successful",user:newUser,token})
         }
@@ -126,6 +126,21 @@ exports.adminUserDetails = async (req, res) => {
             const adminData = await User.findOneAndUpdate({email},{username,email,password,profile:uploadProfile,role},{new:true})
             await adminData.save()
             res.status(200).json({message:"Admin Details Updated",adminData})
+        } catch (error) {
+            res.status(500).json("Err"+error) 
+        }
+    }
+
+    exports.upgradeToProvider = async(req,res)=>{
+        console.log("Inside upgrade to provider");
+        const email = req.payload;
+        try {
+            const userData = await User.findOneAndUpdate({email},{role:"Provider"},{new:true})
+            await userData.save()
+            
+            // Generate a new token with the updated role
+            const token = jwt.sign({email:userData.email, role:userData.role}, process.env.jwtKey)
+            res.status(200).json({message:"Successfully upgraded to Service Provider", user:userData, token})
         } catch (error) {
             res.status(500).json("Err"+error) 
         }

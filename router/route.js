@@ -9,6 +9,8 @@ const providerJwtMiddleware = require('../middlewares/providerMiddleware')
 const appController = require("../controllers/appController")
 const helperController = require("../controllers/helperController")
 const bookController = require("../controllers/bookController")
+const communityController = require("../controllers/communityController")
+const vehicleController = require("../controllers/vehicleController")
 
 //creaet router
 const router = express.Router()
@@ -63,6 +65,17 @@ router.put('/api/appliance/book',jwtMiddleware,appController.bookAppliance)
 
 router.post('/api/makePayment',jwtMiddleware,appController.makePayment)
 
+//community listings
+router.post("/api/community-listing", jwtMiddleware, multerConfig.array('uploadImage', 3), communityController.addListing)
+router.get("/api/community-listing", jwtMiddleware, communityController.getAllListings)
+router.get("/api/community-listing/my-listings", jwtMiddleware, communityController.getUserListings)
+
+//vehicle routes
+router.post("/api/vehicleSP", providerJwtMiddleware, multerConfig.array('uploadImage', 3), vehicleController.addVehicle)
+router.get("/api/vehicles", jwtMiddleware, vehicleController.getVehicles)
+
+//upgrade to provider
+router.post("/api/upgrade-provider", jwtMiddleware, userController.upgradeToProvider)
 
 //export router 
 module.exports = router
