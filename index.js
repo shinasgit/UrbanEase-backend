@@ -31,7 +31,7 @@ urbanEaseServer.use(router);
 urbanEaseServer.use('/uploads',express.static('./uploads'))
 
 //3 port define
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 //4 server start
 urbanEaseServer.listen(PORT, () => {
